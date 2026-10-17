@@ -104,8 +104,22 @@ export default function CourseFormModal({ open, course, onClose }) {
   }, [open, course, form]);
 
   const save = useApiMutation(
-    (values) => {
+    async (values) => {
       const body = toPayload(values);
+      if (uploadFile) {
+        const uploaded = await mediaApi.upload(
+          { file: uploadFile, category: 'COURSE_COVER', visibility: 'PUBLIC' },
+          (e) => setUploadProgress(e.total ? Math.round((e.loaded / e.total) * 100) : 0),
+        );
+        const id = uploaded?.data?.id;
+        if (id) {
+          body.coverMediaId = id;
+          form.setValue('coverMediaId', id);
+          setCoverPreview(uploaded?.data?.url || null);
+          setUploadFile(null);
+          setUploadProgress(0);
+        }
+      }
       return isEdit ? coursesApi.update(course.id, body) : coursesApi.create(body);
     },
     {
@@ -119,7 +133,7 @@ export default function CourseFormModal({ open, course, onClose }) {
   );
 
   const uploadCover = useApiMutation(
-    ({ file }) => mediaApi.upload({ file, category: 'OTHER', visibility: 'PUBLIC' }, (e) => setUploadProgress(e.total ? Math.round((e.loaded / e.total) * 100) : 0)),
+    ({ file }) => mediaApi.upload({ file, category: 'COURSE_COVER', visibility: 'PUBLIC' }, (e) => setUploadProgress(e.total ? Math.round((e.loaded / e.total) * 100) : 0)),
     {
       successMessage: false,
       onSuccess: (result) => {
@@ -177,6 +191,7 @@ export default function CourseFormModal({ open, course, onClose }) {
           {coverPreview ? (
             <img
               src={coverPreview}
+              onError={() => setCoverPreview(null)}
               alt=""
               style={{ width: '100%', maxHeight: 180, objectFit: 'cover', borderRadius: 12, marginBottom: 8 }}
             />
