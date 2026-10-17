@@ -278,7 +278,7 @@ export default function CurriculumManager({ courseId, modules = [] }) {
 
   const uploadResourceMedia = useApiMutation(
     ({ file }) =>
-      mediaApi.upload({ file, category: 'OTHER', visibility: 'PRIVATE' }, (e) =>
+      mediaApi.upload({ file, category: 'LESSON_RESOURCE', visibility: 'PRIVATE' }, (e) =>
         setResourceUploadProgress(e.total ? Math.round((e.loaded / e.total) * 100) : 0),
       ),
     {
@@ -293,7 +293,7 @@ export default function CurriculumManager({ courseId, modules = [] }) {
     },
   );
 
-  const mediaCategory = 'OTHER';
+  const mediaCategory = lessonType === 'VIDEO' ? 'LESSON_VIDEO' : lessonType === 'AUDIO' ? 'LESSON_AUDIO' : 'LESSON_DOCUMENT';
   const accept =
     lessonType === 'VIDEO'
       ? ['video/mp4', 'video/webm', 'video/quicktime']
