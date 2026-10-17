@@ -2,6 +2,8 @@ const en = {
   common: {
     appName: '7-Star',
     adminPanel: 'Admin Console',
+    arabic: 'Arabic',
+    english: 'English',
     save: 'Save',
     saveChanges: 'Save changes',
     saving: 'Saving…',

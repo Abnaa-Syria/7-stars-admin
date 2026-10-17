@@ -239,7 +239,8 @@ export function TeacherProfilePanel({ profile, actions }) {
       <CardBody>
         <DescriptionList
           items={[
-            { label: t('teachers.displayName'), value: profile.displayName },
+            { label: `${t('teachers.displayName')} — ${t('common.arabic')}`, value: profile.displayNameAr ?? profile.displayName },
+            { label: `${t('teachers.displayName')} — ${t('common.english')}`, value: profile.displayNameEn },
             { label: t('teachers.headline'), value: profile.headline },
             { label: t('teachers.specialization'), value: profile.specialization },
             { label: t('teachers.yearsOfExperience'), value: profile.yearsOfExperience !== null && profile.yearsOfExperience !== undefined ? formatNumber(profile.yearsOfExperience) : null },

@@ -8,14 +8,19 @@ import { useI18n } from '@/i18n';
 import { categoriesApi, coursesApi, mediaApi, teachersApi } from '@/api/admin';
 import { queryKeys } from '@/api/queryKeys';
 import { useApiMutation, applyServerErrors } from '@/hooks/useApiMutation';
-import { Button, FileUploader, FormField, Modal, Select, TextInput, Textarea } from '@/components/ui';
+import { BilingualField, Button, FileUploader, FormField, Modal, Select, TextInput, bilingualDefaults, bilingualPayload } from '@/components/ui';
+
+const TR = ['title', 'shortDescription', 'fullDescription'];
 
 const schema = z.object({
-  title: z.string().trim().min(2).max(200),
+  titleAr: z.string().trim().min(2).max(200),
+  titleEn: z.string().trim().max(200).optional().or(z.literal('')),
   teacherId: z.string().uuid(),
   categoryId: z.string().uuid(),
-  shortDescription: z.string().max(500).optional().or(z.literal('')),
-  fullDescription: z.string().max(20000).optional().or(z.literal('')),
+  shortDescriptionAr: z.string().max(500).optional().or(z.literal('')),
+  shortDescriptionEn: z.string().max(500).optional().or(z.literal('')),
+  fullDescriptionAr: z.string().max(20000).optional().or(z.literal('')),
+  fullDescriptionEn: z.string().max(20000).optional().or(z.literal('')),
   level: z.enum(['BEGINNER', 'INTERMEDIATE', 'ADVANCED']),
   visibility: z.enum(['PRIVATE', 'UNLISTED', 'PUBLIC']),
   enrollmentMode: z.enum(['APPROVAL_REQUIRED', 'AUTO_APPROVE']),
@@ -26,11 +31,9 @@ const schema = z.object({
 });
 
 const defaults = {
-  title: '',
+  ...bilingualDefaults(null, TR),
   teacherId: '',
   categoryId: '',
-  shortDescription: '',
-  fullDescription: '',
   level: 'BEGINNER',
   visibility: 'PRIVATE',
   enrollmentMode: 'APPROVAL_REQUIRED',
@@ -42,11 +45,9 @@ const defaults = {
 
 function toPayload(values) {
   return {
-    title: values.title.trim(),
+    ...bilingualPayload(values, TR),
     teacherId: values.teacherId,
     categoryId: values.categoryId,
-    shortDescription: values.shortDescription?.trim() || null,
-    fullDescription: values.fullDescription?.trim() || null,
     level: values.level,
     visibility: values.visibility,
     enrollmentMode: values.enrollmentMode,
@@ -83,11 +84,9 @@ export default function CourseFormModal({ open, course, onClose }) {
     setUploadProgress(0);
     if (course) {
       form.reset({
-        title: course.title || '',
+        ...bilingualDefaults(course, TR),
         teacherId: course.teacherId || course.teacher?.id || '',
         categoryId: course.categoryId || course.category?.id || '',
-        shortDescription: course.shortDescription || '',
-        fullDescription: course.fullDescription || '',
         level: course.level || 'BEGINNER',
         visibility: course.visibility || 'PRIVATE',
         enrollmentMode: course.enrollmentMode || 'APPROVAL_REQUIRED',
@@ -166,9 +165,7 @@ export default function CourseFormModal({ open, course, onClose }) {
       locked={save.isPending || uploadCover.isPending}
     >
       <form className="stack-md" onSubmit={form.handleSubmit((values) => save.mutate(values))}>
-        <FormField label={t('education.title')} required error={form.formState.errors.title?.message}>
-          <TextInput {...form.register('title')} />
-        </FormField>
+        <BilingualField form={form} name="title" label={t('education.title')} required />
 
         <div className="row" style={{ gap: 12, alignItems: 'flex-start' }}>
           <FormField className="grow" label={t('education.assignTeacher')} required error={form.formState.errors.teacherId?.message}>
@@ -223,12 +220,8 @@ export default function CourseFormModal({ open, course, onClose }) {
           <input type="hidden" {...form.register('coverMediaId')} />
         </FormField>
 
-        <FormField label={t('education.shortDescription')} error={form.formState.errors.shortDescription?.message}>
-          <Textarea rows={2} {...form.register('shortDescription')} />
-        </FormField>
-        <FormField label={t('education.fullDescription')} error={form.formState.errors.fullDescription?.message}>
-          <Textarea rows={4} {...form.register('fullDescription')} />
-        </FormField>
+        <BilingualField form={form} name="shortDescription" label={t('education.shortDescription')} multiline rows={2} />
+        <BilingualField form={form} name="fullDescription" label={t('education.fullDescription')} multiline rows={4} />
 
         <div className="row" style={{ gap: 12, flexWrap: 'wrap', alignItems: 'flex-start' }}>
           <FormField label={t('education.level')}>

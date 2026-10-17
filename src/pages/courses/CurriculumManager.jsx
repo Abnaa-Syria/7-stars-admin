@@ -20,25 +20,37 @@ import {
   Modal,
   Select,
   TextInput,
-  Textarea,
   FileUploader,
+  BilingualField,
+  bilingualDefaults,
+  bilingualPayload,
 } from '@/components/ui';
 
 const LESSON_TYPES = ['TEXT', 'VIDEO', 'DOCUMENT', 'AUDIO', 'EXTERNAL_LINK'];
 const RESOURCE_TYPES = ['PDF', 'DOCUMENT', 'IMAGE', 'VIDEO', 'AUDIO', 'LINK', 'ARCHIVE', 'OTHER'];
+const MODULE_TR = ['title', 'description'];
+const LESSON_TR = ['title', 'description', 'textContent'];
+const RESOURCE_TR = ['title'];
+const titleAr = z.string().trim().min(2).max(200);
+const titleEn = z.string().max(200).optional().or(z.literal(''));
 
 const moduleSchema = z.object({
-  title: z.string().trim().min(2).max(200),
-  description: z.string().max(5000).optional().or(z.literal('')),
+  titleAr,
+  titleEn,
+  descriptionAr: z.string().max(5000).optional().or(z.literal('')),
+  descriptionEn: z.string().max(5000).optional().or(z.literal('')),
   status: z.enum(['DRAFT', 'PUBLISHED']),
   isRequired: z.boolean().optional(),
 });
 
 const lessonSchema = z.object({
-  title: z.string().trim().min(2).max(200),
-  description: z.string().max(5000).optional().or(z.literal('')),
+  titleAr,
+  titleEn,
+  descriptionAr: z.string().max(5000).optional().or(z.literal('')),
+  descriptionEn: z.string().max(5000).optional().or(z.literal('')),
   lessonType: z.enum(LESSON_TYPES),
-  textContent: z.string().max(200000).optional().or(z.literal('')),
+  textContentAr: z.string().max(200000).optional().or(z.literal('')),
+  textContentEn: z.string().max(200000).optional().or(z.literal('')),
   externalUrl: z.string().max(1000).optional().or(z.literal('')),
   videoMediaId: z.string().optional().or(z.literal('')),
   documentMediaId: z.string().optional().or(z.literal('')),
@@ -49,7 +61,8 @@ const lessonSchema = z.object({
 });
 
 const resourceSchema = z.object({
-  title: z.string().trim().min(2).max(200),
+  titleAr,
+  titleEn,
   resourceType: z.enum(RESOURCE_TYPES),
   externalUrl: z.string().max(1000).optional().or(z.literal('')),
   mediaFileId: z.string().optional().or(z.literal('')),
@@ -63,10 +76,8 @@ function cleanUuid(value) {
 
 function lessonPayload(values) {
   return {
-    title: values.title.trim(),
-    description: values.description?.trim() || null,
+    ...bilingualPayload(values, LESSON_TR),
     lessonType: values.lessonType,
-    textContent: values.textContent?.trim() || null,
     externalUrl: values.externalUrl?.trim() || null,
     videoMediaId: cleanUuid(values.videoMediaId),
     documentMediaId: cleanUuid(values.documentMediaId),
@@ -104,15 +115,13 @@ export default function CurriculumManager({ courseId, modules = [] }) {
 
   const moduleForm = useForm({
     resolver: zodResolver(moduleSchema),
-    defaultValues: { title: '', description: '', status: 'DRAFT', isRequired: true },
+    defaultValues: { ...bilingualDefaults(null, MODULE_TR), status: 'DRAFT', isRequired: true },
   });
   const lessonForm = useForm({
     resolver: zodResolver(lessonSchema),
     defaultValues: {
-      title: '',
-      description: '',
+      ...bilingualDefaults(null, LESSON_TR),
       lessonType: 'TEXT',
-      textContent: '',
       externalUrl: '',
       videoMediaId: '',
       documentMediaId: '',
@@ -124,7 +133,7 @@ export default function CurriculumManager({ courseId, modules = [] }) {
   });
   const resourceForm = useForm({
     resolver: zodResolver(resourceSchema),
-    defaultValues: { title: '', resourceType: 'PDF', externalUrl: '', mediaFileId: '', isDownloadable: true },
+    defaultValues: { ...bilingualDefaults(null, RESOURCE_TR), resourceType: 'PDF', externalUrl: '', mediaFileId: '', isDownloadable: true },
   });
 
   const lessonType = lessonForm.watch('lessonType');
@@ -134,13 +143,12 @@ export default function CurriculumManager({ courseId, modules = [] }) {
     if (!moduleModal) return;
     if (moduleModal.id) {
       moduleForm.reset({
-        title: moduleModal.title || '',
-        description: moduleModal.description || '',
+        ...bilingualDefaults(moduleModal, MODULE_TR),
         status: moduleModal.status || 'DRAFT',
         isRequired: moduleModal.isRequired !== false,
       });
     } else {
-      moduleForm.reset({ title: '', description: '', status: 'DRAFT', isRequired: true });
+      moduleForm.reset({ ...bilingualDefaults(null, MODULE_TR), status: 'DRAFT', isRequired: true });
     }
   }, [moduleModal, moduleForm]);
 
@@ -151,10 +159,8 @@ export default function CurriculumManager({ courseId, modules = [] }) {
     if (lessonModal.lesson) {
       const l = lessonModal.lesson;
       lessonForm.reset({
-        title: l.title || '',
-        description: l.description || '',
+        ...bilingualDefaults(l, LESSON_TR),
         lessonType: l.lessonType || 'TEXT',
-        textContent: l.textContent || '',
         externalUrl: l.externalUrl || '',
         videoMediaId: l.videoMediaId || l.video?.id || '',
         documentMediaId: l.documentMediaId || l.document?.id || '',
@@ -165,10 +171,8 @@ export default function CurriculumManager({ courseId, modules = [] }) {
       });
     } else {
       lessonForm.reset({
-        title: '',
-        description: '',
+        ...bilingualDefaults(null, LESSON_TR),
         lessonType: 'TEXT',
-        textContent: '',
         externalUrl: '',
         videoMediaId: '',
         documentMediaId: '',
@@ -184,14 +188,13 @@ export default function CurriculumManager({ courseId, modules = [] }) {
     if (!resourceModal) return;
     setResourceUploadFile(null);
     setResourceUploadProgress(0);
-    resourceForm.reset({ title: '', resourceType: 'PDF', externalUrl: '', mediaFileId: '', isDownloadable: true });
+    resourceForm.reset({ ...bilingualDefaults(null, RESOURCE_TR), resourceType: 'PDF', externalUrl: '', mediaFileId: '', isDownloadable: true });
   }, [resourceModal, resourceForm]);
 
   const saveModule = useApiMutation(
     (values) => {
       const body = {
-        title: values.title.trim(),
-        description: values.description?.trim() || null,
+        ...bilingualPayload(values, MODULE_TR),
         status: values.status,
         isRequired: values.isRequired !== false,
       };
@@ -223,7 +226,7 @@ export default function CurriculumManager({ courseId, modules = [] }) {
   const saveResource = useApiMutation(
     (values) => {
       const body = {
-        title: values.title.trim(),
+        ...bilingualPayload(values, RESOURCE_TR),
         resourceType: values.resourceType,
         externalUrl: values.externalUrl?.trim() || null,
         mediaFileId: cleanUuid(values.mediaFileId),
@@ -499,12 +502,8 @@ export default function CurriculumManager({ courseId, modules = [] }) {
         locked={saveModule.isPending}
       >
         <form className="stack-md" onSubmit={moduleForm.handleSubmit((v) => saveModule.mutate(v))}>
-          <FormField label={t('education.moduleTitle')} required error={moduleForm.formState.errors.title?.message}>
-            <TextInput {...moduleForm.register('title')} />
-          </FormField>
-          <FormField label={t('education.description')}>
-            <Textarea rows={3} {...moduleForm.register('description')} />
-          </FormField>
+          <BilingualField form={moduleForm} name="title" label={t('education.moduleTitle')} required />
+          <BilingualField form={moduleForm} name="description" label={t('education.description')} multiline rows={3} />
           <FormField label={t('education.status')}>
             <Select
               {...moduleForm.register('status')}
@@ -531,12 +530,8 @@ export default function CurriculumManager({ courseId, modules = [] }) {
         locked={saveLesson.isPending || uploadMedia.isPending}
       >
         <form className="stack-md" onSubmit={lessonForm.handleSubmit((v) => saveLesson.mutate(v))}>
-          <FormField label={t('education.lessonTitle')} required error={lessonForm.formState.errors.title?.message}>
-            <TextInput {...lessonForm.register('title')} />
-          </FormField>
-          <FormField label={t('education.description')}>
-            <Textarea rows={2} {...lessonForm.register('description')} />
-          </FormField>
+          <BilingualField form={lessonForm} name="title" label={t('education.lessonTitle')} required />
+          <BilingualField form={lessonForm} name="description" label={t('education.description')} multiline rows={2} />
           <div className="row" style={{ gap: 12, flexWrap: 'wrap' }}>
             <FormField label={t('education.lessonType')}>
               <Select
@@ -557,9 +552,7 @@ export default function CurriculumManager({ courseId, modules = [] }) {
           <Checkbox label={t('education.required')} {...lessonForm.register('isRequired')} />
 
           {lessonType === 'TEXT' && (
-            <FormField label={t('education.textContent')} required error={lessonForm.formState.errors.textContent?.message}>
-              <Textarea rows={8} {...lessonForm.register('textContent')} />
-            </FormField>
+            <BilingualField form={lessonForm} name="textContent" label={t('education.textContent')} required multiline rows={8} />
           )}
 
           {(lessonType === 'EXTERNAL_LINK' || lessonType === 'VIDEO') && (
@@ -630,9 +623,7 @@ export default function CurriculumManager({ courseId, modules = [] }) {
       >
         <form className="stack-md" onSubmit={resourceForm.handleSubmit((v) => saveResource.mutate(v))}>
           {resourceModal?.lessonTitle && <div className="field__hint">{resourceModal.lessonTitle}</div>}
-          <FormField label={t('education.resourceTitle')} required error={resourceForm.formState.errors.title?.message}>
-            <TextInput {...resourceForm.register('title')} />
-          </FormField>
+          <BilingualField form={resourceForm} name="title" label={t('education.resourceTitle')} required />
           <FormField label={t('education.resourceType')}>
             <Select
               {...resourceForm.register('resourceType')}

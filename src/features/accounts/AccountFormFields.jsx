@@ -44,11 +44,16 @@ export function teacherSchemaShape(t) {
   const s = makeSchemas(t);
   return {
     displayName: s.optionalText(150),
+    displayNameEn: s.optionalText(150),
     headline: s.optionalText(200),
+    headlineEn: s.optionalText(200),
     biography: s.optionalText(5000),
+    biographyEn: s.optionalText(5000),
     specialization: s.optionalText(150),
+    specializationEn: s.optionalText(150),
     yearsOfExperience: s.intInRange(0, 80, { nullable: true }),
     institution: s.optionalText(200),
+    institutionEn: s.optionalText(200),
     publicProfileSlug: s.slug,
     isPublic: z.boolean(),
   };
@@ -78,13 +83,20 @@ export const accountDefaults = (account, mode) => ({
   ...(mode === 'create' ? { password: '', status: 'ACTIVE', sendVerificationEmail: false } : { newPassword: '' }),
 });
 
+const arOf = (p, f) => (p ? (p[`${f}Ar`] ?? p[f] ?? '') : '');
+
 export const teacherDefaults = (p) => ({
-  displayName: p?.displayName || '',
-  headline: p?.headline || '',
-  biography: p?.biography || '',
-  specialization: p?.specialization || '',
+  displayName: arOf(p, 'displayName'),
+  displayNameEn: p?.displayNameEn || '',
+  headline: arOf(p, 'headline'),
+  headlineEn: p?.headlineEn || '',
+  biography: arOf(p, 'biography'),
+  biographyEn: p?.biographyEn || '',
+  specialization: arOf(p, 'specialization'),
+  specializationEn: p?.specializationEn || '',
   yearsOfExperience: p?.yearsOfExperience ?? '',
-  institution: p?.institution || '',
+  institution: arOf(p, 'institution'),
+  institutionEn: p?.institutionEn || '',
   publicProfileSlug: p?.publicProfileSlug || '',
   isPublic: Boolean(p?.isPublic),
 });
@@ -168,29 +180,34 @@ export function TeacherProfileFields({ form }) {
     control,
     formState: { errors },
   } = form;
+  const pair = (name, labelKey, { multiline = false } = {}) => {
+    const Control = multiline ? Textarea : TextInput;
+    const extra = multiline ? { rows: 5 } : {};
+    const cls = multiline ? 'full' : undefined;
+    return (
+      <>
+        <FormField label={`${t(labelKey)} — ${t('common.arabic')}`} error={errors[name]?.message} optional className={cls}>
+          {({ id, invalid }) => <Control id={id} invalid={invalid} dir="rtl" {...extra} {...register(name)} />}
+        </FormField>
+        <FormField label={`${t(labelKey)} — ${t('common.english')}`} error={errors[`${name}En`]?.message} optional className={cls}>
+          {({ id, invalid }) => <Control id={id} invalid={invalid} dir="ltr" {...extra} {...register(`${name}En`)} />}
+        </FormField>
+      </>
+    );
+  };
   return (
     <div className="form-grid">
-      <FormField label={t('teachers.displayName')} error={errors.displayName?.message} optional>
-        {({ id, invalid }) => <TextInput id={id} invalid={invalid} {...register('displayName')} />}
-      </FormField>
-      <FormField label={t('teachers.headline')} error={errors.headline?.message} optional>
-        {({ id, invalid }) => <TextInput id={id} invalid={invalid} {...register('headline')} />}
-      </FormField>
-      <FormField label={t('teachers.specialization')} error={errors.specialization?.message} optional>
-        {({ id, invalid }) => <TextInput id={id} invalid={invalid} {...register('specialization')} />}
-      </FormField>
+      {pair('displayName', 'teachers.displayName')}
+      {pair('headline', 'teachers.headline')}
+      {pair('specialization', 'teachers.specialization')}
       <FormField label={t('teachers.yearsOfExperience')} error={errors.yearsOfExperience?.message} optional>
         {({ id, invalid }) => <TextInput id={id} invalid={invalid} type="number" min={0} max={80} inputMode="numeric" {...register('yearsOfExperience')} />}
       </FormField>
-      <FormField label={t('teachers.institution')} error={errors.institution?.message} optional>
-        {({ id, invalid }) => <TextInput id={id} invalid={invalid} {...register('institution')} />}
-      </FormField>
+      {pair('institution', 'teachers.institution')}
       <FormField label={t('teachers.publicProfileSlug')} error={errors.publicProfileSlug?.message} hint={t('validation.slug')} optional>
         {({ id, invalid }) => <TextInput id={id} invalid={invalid} className="ltr" placeholder="dr-ahmad" {...register('publicProfileSlug')} />}
       </FormField>
-      <FormField label={t('teachers.biography')} error={errors.biography?.message} optional className="full">
-        {({ id, invalid }) => <Textarea id={id} invalid={invalid} rows={5} {...register('biography')} />}
-      </FormField>
+      {pair('biography', 'teachers.biography', { multiline: true })}
       <div className="full">
         <Controller control={control} name="isPublic" render={({ field }) => <Switch label={t('teachers.isPublic')} checked={field.value} onChange={(e) => field.onChange(e.target.checked)} />} />
       </div>

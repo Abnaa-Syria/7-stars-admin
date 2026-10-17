@@ -2,6 +2,8 @@ const ar = {
   common: {
     appName: '7-Star',
     adminPanel: 'لوحة الإدارة',
+    arabic: 'عربي',
+    english: 'إنجليزي',
     save: 'حفظ',
     saveChanges: 'حفظ التغييرات',
     saving: 'جارٍ الحفظ…',

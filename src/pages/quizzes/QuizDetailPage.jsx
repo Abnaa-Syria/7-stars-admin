@@ -35,7 +35,15 @@ import {
   TextInput,
   Textarea,
   ViewButton,
+  BilingualField,
+  bilingualDefaults,
+  bilingualPayload,
 } from '@/components/ui';
+const QUESTION_TR = ['prompt', 'explanation'];
+const EMPTY_OPTIONS = [
+  { textAr: '', textEn: '', isCorrect: true },
+  { textAr: '', textEn: '', isCorrect: false },
+];
 const QUESTION_TYPES = ['MCQ', 'TRUE_FALSE', 'MULTIPLE_SELECT', 'TEXT'];
 const TYPE_TONE = { MCQ: 'info', TRUE_FALSE: 'gold', MULTIPLE_SELECT: 'warning', TEXT: 'muted' };
 
@@ -49,14 +57,17 @@ function buildReorderItems(list, fromIndex, toIndex) {
 
 const questionSchema = z.object({
   type: z.enum(QUESTION_TYPES),
-  prompt: z.string().trim().min(1).max(10000),
-  explanation: z.string().max(10000).optional().or(z.literal('')),
+  promptAr: z.string().trim().min(1).max(10000),
+  promptEn: z.string().max(10000).optional().or(z.literal('')),
+  explanationAr: z.string().max(10000).optional().or(z.literal('')),
+  explanationEn: z.string().max(10000).optional().or(z.literal('')),
   assessmentPoints: z.coerce.number().int().min(1).max(1000),
   isRequired: z.boolean().optional(),
   options: z
     .array(
       z.object({
-        text: z.string().trim().min(1).max(2000),
+        textAr: z.string().trim().min(1).max(2000),
+        textEn: z.string().max(2000).optional().or(z.literal('')),
         isCorrect: z.boolean().optional(),
       }),
     )
@@ -97,14 +108,10 @@ export default function QuizDetailPage() {
     resolver: zodResolver(questionSchema),
     defaultValues: {
       type: 'MCQ',
-      prompt: '',
-      explanation: '',
+      ...bilingualDefaults(null, QUESTION_TR),
       assessmentPoints: 1,
       isRequired: true,
-      options: [
-        { text: '', isCorrect: true },
-        { text: '', isCorrect: false },
-      ],
+      options: EMPTY_OPTIONS,
       acceptedAnswersText: '',
     },
   });
@@ -115,8 +122,8 @@ export default function QuizDetailPage() {
     if (!questionModal || questionModal.id) return;
     if (questionType === 'TRUE_FALSE') {
       questionForm.setValue('options', [
-        { text: 'True', isCorrect: true },
-        { text: 'False', isCorrect: false },
+        { textAr: 'صح', textEn: 'True', isCorrect: true },
+        { textAr: 'خطأ', textEn: 'False', isCorrect: false },
       ]);
     }
   }, [questionType, questionModal, questionForm]);
@@ -126,30 +133,22 @@ export default function QuizDetailPage() {
     if (questionModal.id) {
       questionForm.reset({
         type: questionModal.type || 'MCQ',
-        prompt: questionModal.prompt || '',
-        explanation: questionModal.explanation || '',
+        ...bilingualDefaults(questionModal, QUESTION_TR),
         assessmentPoints: questionModal.assessmentPoints || 1,
         isRequired: questionModal.isRequired !== false,
         options:
           questionModal.options?.length > 0
-            ? questionModal.options.map((o) => ({ text: o.text, isCorrect: Boolean(o.isCorrect) }))
-            : [
-                { text: '', isCorrect: true },
-                { text: '', isCorrect: false },
-              ],
+            ? questionModal.options.map((o) => ({ textAr: o.textAr ?? o.text ?? '', textEn: o.textEn ?? '', isCorrect: Boolean(o.isCorrect) }))
+            : EMPTY_OPTIONS,
         acceptedAnswersText: (questionModal.acceptedAnswers || []).map((a) => a.answer || a).join('\n'),
       });
     } else {
       questionForm.reset({
         type: 'MCQ',
-        prompt: '',
-        explanation: '',
+        ...bilingualDefaults(null, QUESTION_TR),
         assessmentPoints: 1,
         isRequired: true,
-        options: [
-          { text: '', isCorrect: true },
-          { text: '', isCorrect: false },
-        ],
+        options: EMPTY_OPTIONS,
         acceptedAnswersText: '',
       });
     }
@@ -173,8 +172,7 @@ export default function QuizDetailPage() {
     (values) => {
       const body = {
         type: values.type,
-        prompt: values.prompt.trim(),
-        explanation: values.explanation?.trim() || null,
+        ...bilingualPayload(values, QUESTION_TR),
         assessmentPoints: Number(values.assessmentPoints),
         isRequired: values.isRequired !== false,
       };
@@ -186,8 +184,8 @@ export default function QuizDetailPage() {
         body.textGradingMode = 'CASE_INSENSITIVE';
       } else {
         body.options = (values.options || [])
-          .filter((o) => o.text?.trim())
-          .map((o, i) => ({ text: o.text.trim(), isCorrect: Boolean(o.isCorrect), position: i + 1 }));
+          .filter((o) => o.textAr?.trim())
+          .map((o, i) => ({ textAr: o.textAr.trim(), textEn: o.textEn?.trim() || null, isCorrect: Boolean(o.isCorrect), position: i + 1 }));
       }
       return questionModal?.id ? quizzesApi.updateQuestion(questionModal.id, body) : quizzesApi.createQuestion(id, body);
     },
@@ -486,9 +484,7 @@ export default function QuizDetailPage() {
               }))}
             />
           </FormField>
-          <FormField label={t('phase3.questionPrompt')} required error={questionForm.formState.errors.prompt?.message}>
-            <Textarea rows={3} {...questionForm.register('prompt')} />
-          </FormField>
+          <BilingualField form={questionForm} name="prompt" label={t('phase3.questionPrompt')} required multiline rows={3} />
           <div className="row" style={{ gap: 12 }}>
             <FormField className="grow" label={t('phase3.assessmentPoints')}>
               <TextInput type="number" min={1} {...questionForm.register('assessmentPoints')} />
@@ -497,9 +493,7 @@ export default function QuizDetailPage() {
               <Checkbox label={t('phase3.required')} {...questionForm.register('isRequired')} />
             </div>
           </div>
-          <FormField label={t('phase3.explanation')}>
-            <Textarea rows={2} {...questionForm.register('explanation')} />
-          </FormField>
+          <BilingualField form={questionForm} name="explanation" label={t('phase3.explanation')} multiline rows={2} />
 
           {questionType === 'TEXT' ? (
             <FormField label={t('phase3.acceptedAnswers')} hint="One answer per line">
@@ -514,15 +508,18 @@ export default function QuizDetailPage() {
                   size="sm"
                   variant="outline"
                   icon={Plus}
-                  onClick={() => optionsArray.append({ text: '', isCorrect: false })}
+                  onClick={() => optionsArray.append({ textAr: '', textEn: '', isCorrect: false })}
                 >
                   {t('phase3.addOption')}
                 </Button>
               </div>
               {optionsArray.fields.map((field, index) => (
                 <div key={field.id} className="row" style={{ gap: 8, alignItems: 'flex-end' }}>
-                  <FormField className="grow" label={`${t('phase3.optionText')} ${index + 1}`}>
-                    <TextInput {...questionForm.register(`options.${index}.text`)} />
+                  <FormField className="grow" label={`${t('phase3.optionText')} ${index + 1} — ${t('common.arabic')}`}>
+                    <TextInput dir="rtl" {...questionForm.register(`options.${index}.textAr`)} />
+                  </FormField>
+                  <FormField className="grow" label={t('common.english')}>
+                    <TextInput dir="ltr" {...questionForm.register(`options.${index}.textEn`)} />
                   </FormField>
                   <Checkbox label={t('phase3.isCorrect')} {...questionForm.register(`options.${index}.isCorrect`)} />
                   <Button type="button" size="sm" variant="ghost" icon={Trash2} onClick={() => optionsArray.remove(index)} />

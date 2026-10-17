@@ -14,3 +14,4 @@ export { FileUploader, AvatarUploader, validateFile } from './FileUploader';
 export { PermissionGate } from './PermissionGate';
 export { ProgressBar } from './ProgressBar';
 export { ViewButton } from './ViewButton';
+export { BilingualField, bilingualDefaults, bilingualPayload } from './BilingualField';

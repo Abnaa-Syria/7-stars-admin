@@ -40,7 +40,10 @@ export const USER_STATUSES = ['PENDING_VERIFICATION', 'ACTIVE', 'SUSPENDED', 'BL
 export const VERIFICATION_STATUSES = ['UNVERIFIED', 'PENDING', 'VERIFIED', 'REJECTED'];
 export const LANGUAGES = ['ar', 'en'];
 
-export const TEACHER_PROFILE_KEYS = ['displayName', 'headline', 'biography', 'specialization', 'yearsOfExperience', 'institution', 'publicProfileSlug', 'isPublic'];
+export const TEACHER_PROFILE_KEYS = [
+  'displayName', 'displayNameEn', 'headline', 'headlineEn', 'biography', 'biographyEn', 'specialization', 'specializationEn',
+  'yearsOfExperience', 'institution', 'institutionEn', 'publicProfileSlug', 'isPublic',
+];
 export const STUDENT_PROFILE_KEYS = ['displayName', 'bio', 'institution', 'gradeLevel', 'birthDate'];
 
 export const isSuperAdminAccount = (account) => Boolean(account?.roles?.some((r) => r.slug === 'super-admin'));

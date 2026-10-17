@@ -66,6 +66,8 @@ export function AchievementsPage() {
       code: '',
       titleAr: '',
       titleEn: '',
+      descriptionAr: '',
+      descriptionEn: '',
       ruleType: 'LESSONS_COMPLETED',
       ruleConfig: '{"count":1}',
       rewardPoints: 10,
@@ -133,6 +135,8 @@ export function AchievementsPage() {
                     code: r.code,
                     titleAr: r.titleAr,
                     titleEn: r.titleEn,
+                    descriptionAr: r.descriptionAr || '',
+                    descriptionEn: r.descriptionEn || '',
                     ruleType: r.ruleType || r.unlockRuleType || 'LESSONS_COMPLETED',
                     ruleConfig: JSON.stringify(r.ruleConfig || r.unlockRuleConfig || { count: 1 }),
                     rewardPoints: r.rewardPoints,
@@ -172,6 +176,8 @@ export function AchievementsPage() {
                   { label: t('phase3.code'), value: <span className="ltr">{a.code}</span> },
                   { label: t('education.nameAr'), value: a.titleAr },
                   { label: t('education.nameEn'), value: a.titleEn },
+                  { label: `${t('education.description')} — ${t('common.arabic')}`, value: a.descriptionAr },
+                  { label: `${t('education.description')} — ${t('common.english')}`, value: a.descriptionEn },
                   {
                     label: t('phase3.ruleType'),
                     value: t(`enums.unlockRuleType.${a.ruleType || a.unlockRuleType}`, null, a.ruleType || a.unlockRuleType),
@@ -215,6 +221,8 @@ export function AchievementsPage() {
           )}
           <FormField label={t('education.nameAr')}><TextInput {...form.register('titleAr', { required: true })} /></FormField>
           <FormField label={t('education.nameEn')}><TextInput {...form.register('titleEn', { required: true })} /></FormField>
+          <FormField label={`${t('education.description')} — ${t('common.arabic')}`}><Textarea dir="rtl" rows={2} {...form.register('descriptionAr')} /></FormField>
+          <FormField label={`${t('education.description')} — ${t('common.english')}`}><Textarea dir="ltr" rows={2} {...form.register('descriptionEn')} /></FormField>
           <FormField label={t('phase3.ruleType')}>
             <Select {...form.register('ruleType')}>
               {RULE_TYPES.map((v) => (
@@ -250,7 +258,7 @@ export function StarsPage() {
   const [detail, setDetail] = useState(null);
   const [editOpen, setEditOpen] = useState(false);
   const form = useForm({
-    defaultValues: { titleAr: '', titleEn: '', unlockRuleType: 'LESSONS_COMPLETED', rewardPoints: 0, rewardXp: 0 },
+    defaultValues: { titleAr: '', titleEn: '', descriptionAr: '', descriptionEn: '', unlockRuleType: 'LESSONS_COMPLETED', rewardPoints: 0, rewardXp: 0 },
   });
   const update = useApiMutation(
     ({ id, body }) => starMilestonesApi.update(id, {
@@ -304,6 +312,8 @@ export function StarsPage() {
                   form.reset({
                     titleAr: r.titleAr,
                     titleEn: r.titleEn,
+                    descriptionAr: r.descriptionAr || '',
+                    descriptionEn: r.descriptionEn || '',
                     unlockRuleType: r.unlockRuleType,
                     rewardPoints: r.rewardPoints,
                     rewardXp: r.rewardXp,
@@ -352,6 +362,8 @@ export function StarsPage() {
         >
           <FormField label={t('education.nameAr')}><TextInput {...form.register('titleAr')} /></FormField>
           <FormField label={t('education.nameEn')}><TextInput {...form.register('titleEn')} /></FormField>
+          <FormField label={`${t('education.description')} — ${t('common.arabic')}`}><Textarea dir="rtl" rows={2} {...form.register('descriptionAr')} /></FormField>
+          <FormField label={`${t('education.description')} — ${t('common.english')}`}><Textarea dir="ltr" rows={2} {...form.register('descriptionEn')} /></FormField>
           <FormField label={t('phase3.ruleType')}>
             <Select {...form.register('unlockRuleType')}>
               {RULE_TYPES.map((v) => (
@@ -502,7 +514,7 @@ export function LevelsPage() {
 }
 
 export function RulesPage() {
-  const { t } = useI18n();
+  const { t, locale } = useI18n();
   const { can } = useAuth();
   const query = useQuery({ queryKey: queryKeys.gamificationRules, queryFn: () => gamificationRulesApi.list().then((r) => r.data) });
   const update = useApiMutation(({ id, body }) => gamificationRulesApi.update(id, body), { invalidate: [['gamification-rules']] });
@@ -514,7 +526,7 @@ export function RulesPage() {
           <Card key={r.id}>
             <div style={{ display: 'flex', justifyContent: 'space-between', gap: 12, alignItems: 'center' }}>
               <div>
-                <div style={{ fontWeight: 700 }}>{r.nameAr}</div>
+                <div style={{ fontWeight: 700 }}>{(locale === 'en' ? r.nameEn : r.nameAr) || r.nameAr || r.nameEn}</div>
                 <div className="field__hint ltr">{r.key}</div>
               </div>
               <div className="row" style={{ gap: 8, alignItems: 'center' }}>

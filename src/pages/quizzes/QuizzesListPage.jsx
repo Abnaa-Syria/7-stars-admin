@@ -12,12 +12,15 @@ import { queryKeys } from '@/api/queryKeys';
 import { useListParams } from '@/hooks/useListParams';
 import { useApiMutation } from '@/hooks/useApiMutation';
 import { P } from '@/utils/permissions';
-import { Button, Card, DataTable, EnumBadge, FilterBar, FormField, Modal, PageHeader, Pagination, Select, TextInput, ViewButton } from '@/components/ui';
+import { Button, Card, DataTable, EnumBadge, FilterBar, FormField, Modal, PageHeader, Pagination, Select, TextInput, ViewButton, BilingualField, bilingualPayload } from '@/components/ui';
 
 const schema = z.object({
   courseId: z.string().uuid(),
   moduleId: z.string().uuid(),
-  title: z.string().trim().min(2).max(200),
+  titleAr: z.string().trim().min(2).max(200),
+  titleEn: z.string().trim().max(200).optional().or(z.literal('')),
+  descriptionAr: z.string().max(5000).optional().or(z.literal('')),
+  descriptionEn: z.string().max(5000).optional().or(z.literal('')),
   passingScorePercent: z.union([z.literal(''), z.coerce.number().int().min(0).max(100)]).optional(),
   maxAttempts: z.union([z.literal(''), z.coerce.number().int().min(1).max(100)]).optional(),
 });
@@ -31,7 +34,7 @@ export default function QuizzesListPage() {
   const [createOpen, setCreateOpen] = useState(false);
   const form = useForm({
     resolver: zodResolver(schema),
-    defaultValues: { courseId: '', moduleId: '', title: '', passingScorePercent: 60, maxAttempts: 1 },
+    defaultValues: { courseId: '', moduleId: '', titleAr: '', titleEn: '', descriptionAr: '', descriptionEn: '', passingScorePercent: 60, maxAttempts: 1 },
   });
   const courseId = form.watch('courseId');
 
@@ -51,7 +54,7 @@ export default function QuizzesListPage() {
       quizzesApi.create({
         courseId: values.courseId,
         moduleId: values.moduleId,
-        title: values.title.trim(),
+        ...bilingualPayload(values, ['title', 'description']),
         passingScorePercent: values.passingScorePercent === '' ? 60 : Number(values.passingScorePercent),
         maxAttempts: values.maxAttempts === '' ? 1 : Number(values.maxAttempts),
       }),
@@ -151,9 +154,8 @@ export default function QuizzesListPage() {
           <FormField label={t('phase3.module')} required error={form.formState.errors.moduleId?.message}>
             <Select {...form.register('moduleId')} placeholder={t('phase3.selectModule')} options={moduleOptions} disabled={!courseId} />
           </FormField>
-          <FormField label={t('phase3.title')} required error={form.formState.errors.title?.message}>
-            <TextInput {...form.register('title')} />
-          </FormField>
+          <BilingualField form={form} name="title" label={t('phase3.title')} required />
+          <BilingualField form={form} name="description" label={t('education.description')} multiline rows={2} />
           <div className="row" style={{ gap: 12 }}>
             <FormField className="grow" label={t('phase3.passScore')}>
               <TextInput type="number" min={0} max={100} {...form.register('passingScorePercent')} />
