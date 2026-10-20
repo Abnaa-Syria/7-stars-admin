@@ -163,6 +163,8 @@ export const quizzesApi = {
 export const quizAttemptsApi = {
   list: list('/admin/quiz-attempts'),
   get: (id) => request({ method: 'get', url: `/admin/quiz-attempts/${id}` }),
+  gradeAnswer: (attemptId, answerId, body) =>
+    request({ method: 'post', url: `/admin/quiz-attempts/${attemptId}/answers/${answerId}/grade`, data: body }),
 };
 
 export const achievementsApi = {

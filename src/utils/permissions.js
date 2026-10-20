@@ -72,6 +72,7 @@ export const P = Object.freeze({
   QUIZ_QUESTIONS_UPDATE: 'quiz_questions.update',
   QUIZ_QUESTIONS_DELETE: 'quiz_questions.delete',
   QUIZ_ATTEMPTS_READ: 'quiz_attempts.read',
+  QUIZ_ATTEMPTS_GRADE: 'quiz_attempts.grade',
   GAMIFICATION_READ: 'gamification.read',
   GAMIFICATION_MANAGE: 'gamification.manage',
   ACHIEVEMENTS_READ: 'achievements.read',

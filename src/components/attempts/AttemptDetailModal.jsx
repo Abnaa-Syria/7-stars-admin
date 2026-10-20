@@ -1,8 +1,12 @@
-import { useQuery } from '@tanstack/react-query';
+import { useState } from 'react';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { useI18n } from '@/i18n';
+import { useAuth } from '@/providers/AuthProvider';
 import { quizAttemptsApi } from '@/api/admin';
 import { queryKeys } from '@/api/queryKeys';
-import { Badge, DescriptionList, EnumBadge, Modal, QueryState } from '@/components/ui';
+import { useApiMutation } from '@/hooks/useApiMutation';
+import { P } from '@/utils/permissions';
+import { Badge, Button, DescriptionList, EnumBadge, FormField, Modal, QueryState, SwitchRow, TextInput } from '@/components/ui';
 
 function formatAnswer(q) {
   const a = q.answer;
@@ -17,9 +21,63 @@ function formatAnswer(q) {
   return '—';
 }
 
+function ManualGradeForm({ attemptId, question, onGraded }) {
+  const { t } = useI18n();
+  const [points, setPoints] = useState(question.answer?.assessmentPointsAwarded ?? '');
+  const [isCorrect, setIsCorrect] = useState(question.answer?.isCorrect ?? true);
+  const grade = useApiMutation(
+    (body) => quizAttemptsApi.gradeAnswer(attemptId, question.answer.id, body),
+    {
+      invalidate: [['quiz-attempts'], ['quiz-attempt', attemptId]],
+      successMessage: t('phase3.gradeSaved'),
+      onSuccess: () => onGraded?.(),
+    },
+  );
+
+  return (
+    <div className="stack-sm" style={{ marginTop: 10, paddingTop: 10, borderTop: '1px solid var(--border-soft)' }}>
+      <div className="field__hint" style={{ fontWeight: 600 }}>{t('phase3.manualGrade')}</div>
+      <FormField label={t('phase3.pointsAwarded')}>
+        <TextInput
+          type="number"
+          className="ltr"
+          min={0}
+          max={question.assessmentPoints}
+          value={points}
+          onChange={(e) => setPoints(e.target.value)}
+          disabled={grade.isPending}
+        />
+      </FormField>
+      <SwitchRow
+        label={t('phase3.markCorrect')}
+        checked={Boolean(isCorrect)}
+        onChange={setIsCorrect}
+        disabled={grade.isPending}
+      />
+      <Button
+        size="sm"
+        variant="primary"
+        loading={grade.isPending}
+        disabled={points === '' || Number.isNaN(Number(points))}
+        onClick={() =>
+          grade.mutate({
+            pointsAwarded: Number(points),
+            isCorrect: Boolean(isCorrect),
+          })
+        }
+      >
+        {t('phase3.submitGrade')}
+      </Button>
+    </div>
+  );
+}
+
 /** Shared attempt detail modal used by attempts list and quiz detail. */
 export function AttemptDetailModal({ attemptId, onClose }) {
   const { t, formatDateTime } = useI18n();
+  const { can } = useAuth();
+  const queryClient = useQueryClient();
+  const canGrade = can(P.QUIZ_ATTEMPTS_GRADE);
   const detail = useQuery({
     queryKey: queryKeys.quizAttempt(attemptId),
     queryFn: () => quizAttemptsApi.get(attemptId).then((r) => r.data),
@@ -69,7 +127,10 @@ export function AttemptDetailModal({ attemptId, onClose }) {
                       <span style={{ fontWeight: 700 }}>
                         {i + 1}. {q.prompt}
                       </span>
-                      <EnumBadge value={q.type} ns="questionType" dot={false} />
+                      <div className="row" style={{ gap: 6 }}>
+                        {q.answer?.needsManualGrading && <Badge tone="warning">{t('phase3.needsGrading')}</Badge>}
+                        <EnumBadge value={q.type} ns="questionType" dot={false} />
+                      </div>
                     </div>
                     <div className="field__hint" style={{ marginBottom: 6 }}>
                       {t('phase3.studentAnswer')}: <strong>{formatAnswer(q)}</strong>
@@ -84,6 +145,16 @@ export function AttemptDetailModal({ attemptId, onClose }) {
                         {q.answer?.assessmentPointsAwarded ?? 0} / {q.assessmentPoints} {t('phase3.assessmentPoints')}
                       </span>
                     </div>
+                    {canGrade && q.answer?.needsManualGrading && q.answer?.id && (
+                      <ManualGradeForm
+                        attemptId={attemptId}
+                        question={q}
+                        onGraded={() => {
+                          queryClient.invalidateQueries({ queryKey: queryKeys.quizAttempt(attemptId) });
+                          queryClient.invalidateQueries({ queryKey: ['quiz-attempts'] });
+                        }}
+                      />
+                    )}
                   </div>
                 ))}
               </div>

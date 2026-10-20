@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { NavLink, useParams } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
-import { Globe2, Image, Languages, Mail, Save, Shield } from 'lucide-react';
+import { FileText, Globe2, Image, Languages, Mail, Save, Shield } from 'lucide-react';
 import { useI18n } from '@/i18n';
 import { useAuth } from '@/providers/AuthProvider';
 import { mediaApi, settingsApi } from '@/api/admin';
@@ -33,6 +33,7 @@ const GROUPS = [
   { id: 'security', icon: Shield },
   { id: 'media', icon: Image },
   { id: 'email', icon: Mail },
+  { id: 'legal', icon: FileText },
 ];
 
 const MIME_OPTIONS = [
@@ -135,8 +136,16 @@ function SettingControl({ setting, value, onChange, disabled, timezones }) {
   if (dataType === 'NUMBER') {
     return <TextInput type="number" className="ltr" value={value ?? ''} onChange={(e) => onChange(e.target.value === '' ? '' : Number(e.target.value))} disabled={disabled} />;
   }
-  if (key.endsWith('Ar') || key.includes('footer') || key.includes('tagline')) {
-    return <Textarea rows={3} value={value || ''} onChange={(e) => onChange(e.target.value)} disabled={disabled} />;
+  if (
+    key.includes('terms') ||
+    key.includes('privacy') ||
+    key.includes('footer') ||
+    key.includes('tagline') ||
+    key.includes('message') ||
+    key.endsWith('Ar')
+  ) {
+    const rows = key.includes('terms') || key.includes('privacy') ? 10 : 3;
+    return <Textarea rows={rows} value={value || ''} onChange={(e) => onChange(e.target.value)} disabled={disabled} />;
   }
   return <TextInput value={value || ''} onChange={(e) => onChange(e.target.value)} disabled={disabled} className={key.toLowerCase().includes('email') ? 'ltr' : undefined} />;
 }

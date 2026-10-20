@@ -579,6 +579,14 @@ export default function CourseDetailPage() {
                           tone="gold"
                         />
                         <StatCard label={t('education.averageScore')} value={p.averageQuizScore ?? '—'} />
+                        {p.quizCompletionRate != null && (
+                          <StatCard
+                            label={t('education.quizCompletionRate')}
+                            value={`${p.quizCompletionRate}%`}
+                            hint={<ProgressBar value={p.quizCompletionRate} showValue={false} />}
+                            tone="info"
+                          />
+                        )}
                       </div>
                     )}
                   </QueryState>

@@ -5,7 +5,7 @@ import { quizAttemptsApi } from '@/api/admin';
 import { queryKeys } from '@/api/queryKeys';
 import { useListParams } from '@/hooks/useListParams';
 import { AttemptDetailModal } from '@/components/attempts/AttemptDetailModal';
-import { Card, DataTable, EnumBadge, FilterBar, PageHeader, Pagination, ViewButton } from '@/components/ui';
+import { Badge, Card, DataTable, EnumBadge, FilterBar, PageHeader, Pagination, ViewButton } from '@/components/ui';
 
 const ATTEMPT_STATUSES = ['IN_PROGRESS', 'SUBMITTED', 'EXPIRED', 'GRADED'];
 
@@ -21,6 +21,16 @@ export default function QuizAttemptsPage() {
       { key: 'quiz', header: t('phase3.quiz'), render: (r) => r.quiz?.title || '—' },
       { key: 'score', header: t('phase3.score'), render: (r) => (r.scorePercent != null ? `${r.scorePercent}%` : '—') },
       { key: 'status', header: t('education.status'), render: (r) => <EnumBadge value={r.status} ns="attemptStatus" /> },
+      {
+        key: 'needsGrading',
+        header: t('phase3.needsGrading'),
+        render: (r) =>
+          r.needsManualGrading ? (
+            <Badge tone="warning">{t('phase3.pendingAnswers', { n: r.pendingManualAnswers || 1 })}</Badge>
+          ) : (
+            '—'
+          ),
+      },
       { key: 'submittedAt', header: t('phase3.submittedAt'), render: (r) => (r.submittedAt ? formatDateTime(r.submittedAt) : '—') },
       {
         key: 'actions',
@@ -43,6 +53,14 @@ export default function QuizAttemptsPage() {
               key: 'status',
               label: t('education.status'),
               options: ATTEMPT_STATUSES.map((v) => ({ value: v, label: t(`enums.attemptStatus.${v}`, null, v) })),
+            },
+            {
+              key: 'needsGrading',
+              label: t('phase3.needsGrading'),
+              options: [
+                { value: 'true', label: t('phase3.needsGradingYes') },
+                { value: 'false', label: t('phase3.needsGradingNo') },
+              ],
             },
           ]}
         />
