@@ -16,6 +16,9 @@ const en = {
     back: 'Back',
     confirm: 'Confirm',
     close: 'Close',
+    poweredBy: 'Powered by',
+    vendorName: 'Triasols',
+    allRightsReserved: 'All rights reserved',
     search: 'Search',
     searchPlaceholder: 'Search…',
     filters: 'Filters',
@@ -775,7 +778,6 @@ const en = {
   dashboard: {
     title: 'Dashboard',
     subtitle: 'Platform accounts, registrations and security activity',
-    bilingualOps: 'Bilingual operations',
     searchAdmin: 'Search admin console…',
     trailing7: '14-day registration trend',
     teachersHint: 'Faculty accounts',

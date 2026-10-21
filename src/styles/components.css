@@ -2305,8 +2305,7 @@ html[lang='ar'] .table th {
     grid-template-columns: minmax(0, 1fr);
   }
 
-  .header-search,
-  .header__chip {
+  .header-search {
     display: none !important;
   }
 

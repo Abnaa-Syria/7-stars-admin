@@ -1,8 +1,8 @@
 import { Outlet } from 'react-router-dom';
-import { ShieldCheck } from 'lucide-react';
 import { useI18n } from '@/i18n';
 import { useAuth } from '@/providers/AuthProvider';
 import { BrandMark, LanguageSwitch, ThemeSwitch } from '@/components/brand/BrandMark';
+import { PoweredBy } from '@/components/brand/PoweredBy';
 
 export default function AuthLayout() {
   const { t, locale } = useI18n();
@@ -24,11 +24,8 @@ export default function AuthLayout() {
             <Outlet />
           </div>
         </div>
-        <div className="auth__foot">
-          <ShieldCheck size={14} />
-          {t('auth.secureArea')}
-        </div>
       </div>
+      <PoweredBy />
     </div>
   );
 }

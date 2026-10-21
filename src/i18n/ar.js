@@ -16,6 +16,9 @@ const ar = {
     back: 'رجوع',
     confirm: 'تأكيد',
     close: 'إغلاق',
+    poweredBy: 'Powered by',
+    vendorName: 'Triasols',
+    allRightsReserved: 'جميع الحقوق محفوظة',
     search: 'بحث',
     searchPlaceholder: 'ابحث…',
     filters: 'التصفية',
@@ -775,7 +778,6 @@ const ar = {
   dashboard: {
     title: 'لوحة التحكم',
     subtitle: 'حسابات المنصة والتسجيلات والنشاط الأمني',
-    bilingualOps: 'تشغيل ثنائي اللغة',
     searchAdmin: 'ابحث في لوحة الإدارة…',
     trailing7: 'اتجاه التسجيلات لـ 14 يوماً',
     teachersHint: 'حسابات المدرسين',

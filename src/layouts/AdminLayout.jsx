@@ -1,11 +1,12 @@
 import { useEffect, useMemo, useState } from 'react';
 import { NavLink, Outlet, useLocation, useNavigate } from 'react-router-dom';
 import clsx from 'clsx';
-import { ChevronDown, LogOut, Menu as MenuIcon, PanelLeftClose, PanelLeftOpen, ShieldCheck, UserRound } from 'lucide-react';
+import { ChevronDown, LogOut, Menu as MenuIcon, PanelLeftClose, PanelLeftOpen, UserRound } from 'lucide-react';
 import { useI18n } from '@/i18n';
 import { useAuth } from '@/providers/AuthProvider';
 import { Avatar, Button, DropdownMenu } from '@/components/ui';
 import { BrandMark, LanguageSwitch, ThemeSwitch } from '@/components/brand/BrandMark';
+import { PoweredBy } from '@/components/brand/PoweredBy';
 import { ALL_NAV_ITEMS, NAV_SECTIONS } from './navigation';
 
 const COLLAPSE_KEY = 'ss_admin_sidebar_collapsed';
@@ -38,10 +39,6 @@ function Sidebar({ onNavigate }) {
           );
         })}
       </nav>
-      <div className="sidebar__footer">
-        <ShieldCheck size={15} />
-        <span className="sidebar__footer-text">{t('auth.secureArea')}</span>
-      </div>
     </aside>
   );
 }
@@ -60,7 +57,6 @@ function Header({ onToggleSidebar, onToggleMobile, collapsed }) {
       <Button variant="ghost" size="sm" icon={MenuIcon} className="mobile-only" onClick={onToggleMobile} aria-label={t('common.toggleSidebar')} />
       <Button variant="ghost" size="sm" icon={CollapseIcon} className="desktop-only flip-rtl" onClick={onToggleSidebar} aria-label={t('common.toggleSidebar')} />
       <span className="header__title">{current ? t(current.label) : t('common.adminPanel')}</span>
-      <span className="header__chip">{t('dashboard.bilingualOps')}</span>
       <span className="header__spacer" />
       <form
         className="header-search desktop-only"
@@ -144,6 +140,7 @@ export default function AdminLayout() {
         <main className="content">
           <Outlet />
         </main>
+        <PoweredBy />
       </div>
     </div>
   );

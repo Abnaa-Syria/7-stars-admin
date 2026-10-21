@@ -128,8 +128,7 @@
 .shell--collapsed .brand-text,
 .shell--collapsed .brand-admin-pill,
 .shell--collapsed .nav__section-label,
-.shell--collapsed .nav__label,
-.shell--collapsed .sidebar__footer-text {
+.shell--collapsed .nav__label {
   display: none;
 }
 
@@ -200,20 +199,6 @@
   padding: 0;
 }
 
-.sidebar__footer {
-  padding: 14px 16px;
-  border-top: 1px solid var(--border-soft);
-  font-size: 11.5px;
-  color: var(--text-subtle);
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.sidebar__footer svg {
-  color: var(--gold);
-}
-
 .main {
   flex: 1;
   min-width: 0;
@@ -257,17 +242,6 @@
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-}
-
-.header__chip {
-  font-size: 11px;
-  font-weight: 500;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  color: var(--text-subtle);
-  border: 1px solid var(--border);
-  border-radius: 999px;
-  padding: 2px 8px;
 }
 
 .header-search {
@@ -395,6 +369,8 @@
 
 .content {
   flex: 1;
+  display: flex;
+  flex-direction: column;
   width: 100%;
   max-width: min(var(--content-max), 100%);
   margin: 0 auto;
@@ -420,8 +396,7 @@
   .shell--collapsed .brand-text,
   .shell--collapsed .brand-admin-pill,
   .shell--collapsed .nav__section-label,
-  .shell--collapsed .nav__label,
-  .shell--collapsed .sidebar__footer-text {
+  .shell--collapsed .nav__label {
     display: initial;
   }
   .shell--collapsed .nav__link {
@@ -439,7 +414,6 @@
     gap: 8px;
     padding: 0 12px;
   }
-  .header__chip,
   .header-search {
     display: none !important;
   }
@@ -459,9 +433,8 @@
 .auth {
   height: 100%;
   min-height: 0;
-  overflow-y: auto;
   display: flex;
-  justify-content: center;
+  flex-direction: column;
   position: relative;
   background: var(--bg);
 }
@@ -471,7 +444,10 @@
   z-index: 1;
   width: 100%;
   max-width: 480px;
-  min-height: 100vh;
+  margin: 0 auto;
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
   display: flex;
   flex-direction: column;
   padding: 28px 24px 24px;
@@ -514,18 +490,105 @@
   margin-bottom: 30px;
 }
 
-.auth__foot {
-  font-size: 12px;
-  color: var(--text-subtle);
+.site-foot {
+  flex-shrink: 0;
   display: flex;
   align-items: center;
-  justify-content: center;
-  gap: 8px;
-  padding-top: 8px;
+  justify-content: space-between;
+  gap: 16px 24px;
+  width: 100%;
+  padding: 14px 28px;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  background: #1c1c1e;
 }
 
-.auth__foot svg {
-  color: var(--gold);
+[data-theme='light'] .site-foot {
+  border-top-color: var(--border);
+  background: #ffffff;
+}
+
+.site-foot__copy {
+  margin: 0;
+  font-size: 13px;
+  color: #b8b8b8;
+  white-space: nowrap;
+}
+
+[data-theme='light'] .site-foot__copy {
+  color: var(--text-subtle);
+}
+
+.site-foot__brand {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 7px;
+  margin: 0;
+  white-space: nowrap;
+}
+
+.site-foot__label {
+  font-size: 13px;
+  color: #b8b8b8;
+}
+
+[data-theme='light'] .site-foot__label {
+  color: var(--text-subtle);
+}
+
+.site-foot__vendor {
+  font-family: var(--font-en);
+  font-size: 14.5px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-decoration: none;
+  background: linear-gradient(110deg, #8b7cf6 0%, #d8b4fe 42%, #f5e6ff 50%, #c4b5fd 58%, #7c6af0 100%);
+  background-size: 220% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: triasols-sheen 4.5s ease-in-out infinite;
+  filter: drop-shadow(0 0 10px rgba(167, 139, 250, 0.35));
+}
+
+[data-theme='light'] .site-foot__vendor {
+  background: linear-gradient(110deg, #6d5ce7 0%, #a78bfa 42%, #ede0ff 50%, #8b5cf6 58%, #5b4bd6 100%);
+  background-size: 220% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  filter: drop-shadow(0 0 6px rgba(139, 92, 246, 0.22));
+}
+
+.site-foot__vendor:hover {
+  filter: drop-shadow(0 0 14px rgba(196, 181, 253, 0.55));
+}
+
+@keyframes triasols-sheen {
+  0%,
+  100% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .site-foot__vendor {
+    animation: none;
+  }
+}
+
+@media (max-width: 720px) {
+  .site-foot {
+    flex-wrap: wrap;
+    justify-content: center;
+    text-align: center;
+    padding: 14px 16px;
+  }
+
+  .site-foot__copy {
+    white-space: normal;
+  }
 }
 
 @media (max-width: 560px) {
@@ -759,8 +822,7 @@
 }
 
 @container app (max-width: 1100px) {
-  .header-search,
-  .header__chip {
+  .header-search {
     display: none !important;
   }
 }
