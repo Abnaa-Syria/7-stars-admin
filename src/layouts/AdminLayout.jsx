@@ -17,7 +17,7 @@ function Sidebar({ onNavigate }) {
     <aside className="sidebar">
       <div className="sidebar__brand">
         <span className="row" style={{ gap: 8, minWidth: 0 }}>
-          <BrandMark />
+          <BrandMark variant="wide" />
         </span>
         <span className="brand-admin-pill">{t('common.adminBadge')}</span>
       </div>

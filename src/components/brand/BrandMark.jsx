@@ -1,24 +1,32 @@
-import { Moon, Star, Sun } from 'lucide-react';
+import { Moon, Sun } from 'lucide-react';
 import { useI18n } from '@/i18n';
 import { useTheme } from '@/providers/ThemeProvider';
 import { usePublicSettings } from '@/hooks/usePublicSettings';
 
-/** Logo from branding settings when configured, otherwise the gold star mark. */
-export function BrandMark({ showText = true }) {
+const OFFICIAL = {
+  full: '/brand/logo.png',
+  wide: '/brand/logo-wide.png',
+  mark: '/brand/logo.png',
+};
+
+/** Official Seven Stars lockup. Settings logo overrides when uploaded. */
+export function BrandMark({ showText = false, variant = 'wide' }) {
   const { t } = useI18n();
   const { logoUrl, platformName } = usePublicSettings();
+  const src = logoUrl || OFFICIAL[variant] || OFFICIAL.wide;
+  const label = platformName || t('common.appName');
+
   return (
-    <>
-      <span className="brand-mark">{logoUrl ? <img src={logoUrl} alt="" /> : <Star size={20} fill="currentColor" />}</span>
-      {showText && (
+    <span className={`brand-lockup brand-lockup--${variant}`}>
+      <img className="brand-lockup__img" src={src} alt={label} />
+      {showText && !logoUrl && variant === 'mark' && (
         <span className="brand-text">
           <span className="brand-text__name ltr" dir="ltr">
-            {platformName || t('common.appName')}
+            {label}
           </span>
-          <span className="brand-text__sub">{t('common.adminPanel')}</span>
         </span>
       )}
-    </>
+    </span>
   );
 }
 
