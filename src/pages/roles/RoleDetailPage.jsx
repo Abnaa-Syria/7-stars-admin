@@ -71,7 +71,15 @@ export default function RoleDetailPage() {
                     { label: t('roles.slug'), value: <span className="mono ltr">{data.slug}</span> },
                     { label: t('roles.type'), value: <Badge tone={data.isSystem ? 'gold' : 'info'}>{data.isSystem ? t('roles.systemRole') : t('roles.customRole')}</Badge> },
                     { label: t('roles.usersCount'), value: data.usersCount },
-                    { label: t('roles.permissionsCount'), value: data.permissionsCount ?? data.permissions?.length },
+                    {
+                      label: t('roles.permissionsCount'),
+                      value:
+                        data.slug === 'super-admin' || data.permissionsImplicit
+                          ? data.permissionsCount
+                            ? `${t('roles.allPermissions')} · ${data.permissionsCount}`
+                            : t('roles.allPermissions')
+                          : data.permissionsCount ?? data.permissions?.length ?? 0,
+                    },
                     { label: t('roles.description'), value: data.description, full: true },
                     { label: t('common.details'), value: formatDateTime(data.createdAt) },
                   ]}

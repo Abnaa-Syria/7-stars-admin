@@ -31,7 +31,17 @@ export default function RolesListPage() {
     },
     { key: 'type', header: t('roles.type'), render: (r) => <Badge tone={r.isSystem ? 'gold' : 'info'}>{r.isSystem ? t('roles.systemRole') : t('roles.customRole')}</Badge> },
     { key: 'usersCount', header: t('roles.usersCount'), render: (r) => r.usersCount ?? 0 },
-    { key: 'permissionsCount', header: t('roles.permissionsCount'), render: (r) => r.permissionsCount ?? 0 },
+    {
+      key: 'permissionsCount',
+      header: t('roles.permissionsCount'),
+      render: (r) => {
+        if (r.slug === 'super-admin' || r.permissionsImplicit) {
+          return r.permissionsCount ? `${t('roles.allPermissions')} · ${r.permissionsCount}` : t('roles.allPermissions');
+        }
+        if (r.isSystem && !r.permissionsCount) return '—';
+        return r.permissionsCount ?? 0;
+      },
+    },
     { key: 'createdAt', header: t('users.joined'), sortKey: 'createdAt', render: (r) => formatDate(r.createdAt) },
     {
       key: 'actions',

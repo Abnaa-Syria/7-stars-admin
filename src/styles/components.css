@@ -836,6 +836,46 @@
   min-width: 140px;
 }
 
+@media (max-width: 720px) {
+  .filter-bar {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .filter-bar__search,
+  .filter-bar .select,
+  .filter-bar .input,
+  .filter-bar .input[type='date'] {
+    width: 100%;
+    max-width: none;
+    min-width: 0;
+  }
+
+  .page-header {
+    align-items: stretch;
+  }
+
+  .page-header__actions,
+  .page-header__actions .btn {
+    width: 100%;
+  }
+
+  .table-wrap {
+    max-width: 100%;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .card {
+    overflow: hidden;
+    max-width: 100%;
+  }
+
+  .identity__name,
+  .cell-title {
+    max-width: 180px;
+  }
+}
+
 .filter-bar__spacer {
   flex: 1;
 }

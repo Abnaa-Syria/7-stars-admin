@@ -1,6 +1,6 @@
-/** Localized audit action / entity labels, falling back to the raw constant for new actions. */
-export const auditActionLabel = (t, action) => t(`audit.actions.${action}`, null, action);
-export const auditEntityLabel = (t, entity) => t(`audit.entities.${entity}`, null, entity);
+/** Localized audit action / entity labels, falling back to a readable phrase. */
+export const auditActionLabel = (t, action) => t(`audit.actions.${action}`, null, humanizeKey(action));
+export const auditEntityLabel = (t, entity) => t(`audit.entities.${entity}`, null, humanizeKey(entity));
 
 const FIELD_I18N = {
   fullName: 'audit.fields.fullName',
