@@ -300,12 +300,12 @@ export default function CourseDetailPage() {
 
                 <Card>
                   <div className="stack-md">
-                    <div style={{ fontWeight: 700 }}>{t('education.code')}</div>
+                    <div className="section-title" style={{ marginBottom: 0 }}>{t('education.code')}</div>
                     <p className="field__hint" style={{ margin: 0 }}>
                       {t('education.codeHint')}
                     </p>
                     <div className="row" style={{ flexWrap: 'wrap', gap: 8, alignItems: 'center' }}>
-                      <code className="ltr" style={{ fontSize: 18, fontWeight: 700, letterSpacing: 1 }}>
+                      <code className="ltr" style={{ fontSize: 16 }}>
                         {data.activeCode?.code || t('education.noActiveCode')}
                       </code>
                       {data.activeCode?.code && (
@@ -364,14 +364,14 @@ export default function CourseDetailPage() {
                       { label: t('education.maxStudents'), value: data.maxStudents ?? '—' },
                       { label: t('education.publishedAt'), value: data.publishedAt ? formatDateTime(data.publishedAt) : '—' },
                       { label: t('education.updatedAt'), value: formatDateTime(data.updatedAt) },
-                      { label: t('education.shortDescription'), value: data.shortDescription || '—' },
-                      { label: t('education.fullDescription'), value: data.fullDescription || '—' },
+                      { label: t('education.shortDescription'), value: data.shortDescription || '—', full: true },
+                      { label: t('education.fullDescription'), value: data.fullDescription || '—', full: true },
                     ]}
                   />
                 </Card>
                 {data.publishValidation && !data.publishValidation.canPublish && (data.publishValidation.issues || []).length > 0 && (
                   <Card>
-                    <div style={{ fontWeight: 700, marginBottom: 8 }}>{t('education.publishBlocked')}</div>
+                    <div className="section-title">{t('education.publishBlocked')}</div>
                     <ul style={{ margin: 0, paddingInlineStart: 18 }}>
                       {(data.publishValidation.issues || []).map((issue) => (
                         <li key={issue.code || issue.message}>{issue.message || issue.code}</li>
@@ -618,7 +618,7 @@ export default function CourseDetailPage() {
 
                 {can(P.REPORTS_READ) && (
                   <Card>
-                    <div style={{ fontWeight: 700, marginBottom: 12 }}>{t('education.students')}</div>
+                    <div className="section-title">{t('education.students')}</div>
                     <DataTable
                       columns={[
                         { key: 'name', header: t('education.student'), render: (r) => r.fullName || '—' },
@@ -728,7 +728,7 @@ export default function CourseDetailPage() {
                 ]}
               />
               <div>
-                <div style={{ fontWeight: 700, marginBottom: 8 }}>{t('education.moduleProgress')}</div>
+                <div className="section-title">{t('education.moduleProgress')}</div>
                 <DataTable
                   columns={[
                     { key: 'title', header: t('education.moduleTitle'), render: (r) => r.title || r.moduleTitle || '—' },
@@ -748,7 +748,7 @@ export default function CourseDetailPage() {
                 />
               </div>
               <div>
-                <div style={{ fontWeight: 700, marginBottom: 8 }}>{t('education.recentActivity')}</div>
+                <div className="section-title">{t('education.recentActivity')}</div>
                 <DataTable
                   columns={[
                     { key: 'lesson', header: t('education.lessonTitle'), render: (r) => r.lesson?.title || '—' },

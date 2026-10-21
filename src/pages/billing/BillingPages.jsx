@@ -133,7 +133,7 @@ export function SubscriptionsPage() {
     () => [
       { key: 'user', header: t('phase4.user'), render: (r) => (
         <div>
-          <div style={{ fontWeight: 700 }}>{r.user?.fullName || '—'}</div>
+          <div className="cell-title">{r.user?.fullName || '—'}</div>
           <div className="field__hint ltr">{r.user?.email}</div>
         </div>
       ) },
@@ -401,7 +401,7 @@ export function CouponsPage() {
 
   const columns = useMemo(
     () => [
-      { key: 'code', header: t('phase4.couponCode'), render: (r) => <span className="ltr" style={{ fontWeight: 700 }}>{r.code}</span> },
+      { key: 'code', header: t('phase4.couponCode'), render: (r) => <span className="ltr cell-title">{r.code}</span> },
       { key: 'name', header: t('phase4.title'), render: (r) => (locale === 'ar' ? r.nameAr : r.nameEn) },
       {
         key: 'discount',
@@ -447,7 +447,7 @@ export function CouponsPage() {
             <div className="stack-md">
               <DescriptionList
                 items={[
-                  { label: t('phase4.couponCode'), value: <span className="ltr" style={{ fontWeight: 700 }}>{c.code}</span> },
+                  { label: t('phase4.couponCode'), value: <span className="ltr cell-title">{c.code}</span> },
                   { label: t('education.nameAr'), value: c.nameAr },
                   { label: t('education.nameEn'), value: c.nameEn },
                   {

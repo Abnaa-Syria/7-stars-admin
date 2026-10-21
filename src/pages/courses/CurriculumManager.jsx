@@ -383,25 +383,15 @@ export default function CurriculumManager({ courseId, modules = [] }) {
               </div>
             }
           />
-          <div className="stack-sm" style={{ padding: '0 4px 8px' }}>
-            {(mod.lessons || []).length === 0 && <div className="field__hint">{t('education.noLessons')}</div>}
+          <div className="curriculum-list">
+            {(mod.lessons || []).length === 0 && <div className="field__hint" style={{ padding: '8px 8px 4px' }}>{t('education.noLessons')}</div>}
             {(mod.lessons || []).map((lesson, lessonIndex) => (
-              <div
-                key={lesson.id}
-                style={{
-                  display: 'flex',
-                  justifyContent: 'space-between',
-                  gap: 12,
-                  alignItems: 'flex-start',
-                  padding: '10px 4px',
-                  borderTop: '1px solid var(--border-subtle)',
-                }}
-              >
-                <div className="stack-sm" style={{ gap: 4, flex: 1 }}>
-                  <div style={{ fontWeight: 600 }}>
+              <div key={lesson.id} className="curriculum-lesson">
+                <div className="stack-sm" style={{ flex: 1, minWidth: 0 }}>
+                  <div className="cell-title">
                     {lesson.position}. {lesson.title}
                   </div>
-                  <div className="field__hint" style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+                  <div className="curriculum-lesson__meta field__hint">
                     <span>{t(`enums.lessonType.${lesson.lessonType}`, null, lesson.lessonType)}</span>
                     <span>·</span>
                     <span>{t(`enums.curriculumStatus.${lesson.status}`, null, lesson.status)}</span>

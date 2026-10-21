@@ -35,7 +35,7 @@ export default function FeatureFlagsPage() {
         header: t('phase4.flagKey'),
         render: (r) => (
           <div>
-            <div style={{ fontWeight: 700 }}>{flagTitle(t, r.key)}</div>
+            <div className="cell-title">{flagTitle(t, r.key)}</div>
             <div className="field__hint" style={{ marginTop: 4 }}>
               {flagDescription(t, r.key, r.description)}
             </div>

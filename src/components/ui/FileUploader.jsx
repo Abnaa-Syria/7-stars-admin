@@ -39,7 +39,7 @@ export function FileUploader({ accept = [], maxMb, file, onSelect, progress, dis
         <div className="dropzone__file">
           {preview ? <img src={preview} alt="" className="dropzone__thumb" /> : <span className="dropzone__thumb" style={{ display: 'grid', placeItems: 'center' }}><FileText size={22} /></span>}
           <div className="grow">
-            <div className="truncate" style={{ fontWeight: 700 }}>
+            <div className="truncate cell-title">
               {file.name}
             </div>
             <div className="field__hint">

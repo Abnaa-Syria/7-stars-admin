@@ -502,7 +502,7 @@ export default function QuizDetailPage() {
           ) : (
             <div className="stack-sm">
               <div className="row" style={{ justifyContent: 'space-between' }}>
-                <div style={{ fontWeight: 600 }}>{t('phase3.options')}</div>
+                <div className="section-title" style={{ marginBottom: 0 }}>{t('phase3.options')}</div>
                 <Button
                   type="button"
                   size="sm"

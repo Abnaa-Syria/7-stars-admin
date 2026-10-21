@@ -83,7 +83,7 @@ export default function CategoriesPage() {
 
   const columns = useMemo(
     () => [
-      { key: 'name', header: t('education.category'), sortKey: 'name', render: (r) => <div><div style={{ fontWeight: 700 }}>{r.name}</div><div className="field__hint ltr">{r.slug}</div></div> },
+      { key: 'name', header: t('education.category'), sortKey: 'name', render: (r) => <div><div className="cell-title">{r.name}</div><div className="field__hint ltr">{r.slug}</div></div> },
       { key: 'status', header: t('education.status'), render: (r) => <EnumBadge value={r.status} ns="categoryStatus" /> },
       { key: 'courses', header: t('education.courses'), render: (r) => r.coursesCount ?? 0 },
       { key: 'sortOrder', header: t('education.sortOrder'), sortKey: 'sortOrder', render: (r) => r.sortOrder },

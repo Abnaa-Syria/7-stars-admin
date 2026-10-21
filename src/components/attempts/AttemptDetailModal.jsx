@@ -36,7 +36,7 @@ function ManualGradeForm({ attemptId, question, onGraded }) {
 
   return (
     <div className="stack-sm" style={{ marginTop: 10, paddingTop: 10, borderTop: '1px solid var(--border-soft)' }}>
-      <div className="field__hint" style={{ fontWeight: 600 }}>{t('phase3.manualGrade')}</div>
+      <div className="field__hint cell-title">{t('phase3.manualGrade')}</div>
       <FormField label={t('phase3.pointsAwarded')}>
         <TextInput
           type="number"
@@ -124,7 +124,7 @@ export function AttemptDetailModal({ attemptId, onClose }) {
                 {a.questions.map((q, i) => (
                   <div key={q.id} className="card" style={{ padding: '14px 16px' }}>
                     <div className="row" style={{ justifyContent: 'space-between', gap: 8, marginBottom: 8 }}>
-                      <span style={{ fontWeight: 700 }}>
+                      <span className="cell-title">
                         {i + 1}. {q.prompt}
                       </span>
                       <div className="row" style={{ gap: 6 }}>

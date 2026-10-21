@@ -23,7 +23,7 @@ export function TeacherCoursesPanel({ teacherId }) {
         key: 'title',
         header: t('education.course'),
         render: (r) => (
-          <Link to={`/courses/${r.id}`} style={{ fontWeight: 700 }}>
+          <Link to={`/courses/${r.id}`} className="cell-title">
             {r.title}
           </Link>
         ),
@@ -78,7 +78,7 @@ export function StudentEnrollmentsPanel({ studentId }) {
         header: t('education.course'),
         render: (r) =>
           r.course?.id ? (
-            <Link to={`/courses/${r.course.id}`} style={{ fontWeight: 700 }}>
+            <Link to={`/courses/${r.course.id}`} className="cell-title">
               {r.course.title}
             </Link>
           ) : (

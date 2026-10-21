@@ -81,7 +81,7 @@ export default function QuizzesListPage() {
         header: t('phase3.quiz'),
         render: (r) => (
           <div>
-            <div style={{ fontWeight: 700 }}>{r.title}</div>
+            <div className="cell-title">{r.title}</div>
             <div className="field__hint">{r.course?.title}</div>
           </div>
         ),

@@ -16,7 +16,10 @@ function Sidebar({ onNavigate }) {
   return (
     <aside className="sidebar">
       <div className="sidebar__brand">
-        <BrandMark />
+        <span className="row" style={{ gap: 8, minWidth: 0 }}>
+          <BrandMark />
+        </span>
+        <span className="brand-admin-pill">{t('common.adminBadge')}</span>
       </div>
       <nav className="sidebar__nav">
         {NAV_SECTIONS.map((section) => {
@@ -57,7 +60,23 @@ function Header({ onToggleSidebar, onToggleMobile, collapsed }) {
       <Button variant="ghost" size="sm" icon={MenuIcon} className="mobile-only" onClick={onToggleMobile} aria-label={t('common.toggleSidebar')} />
       <Button variant="ghost" size="sm" icon={CollapseIcon} className="desktop-only flip-rtl" onClick={onToggleSidebar} aria-label={t('common.toggleSidebar')} />
       <span className="header__title">{current ? t(current.label) : t('common.adminPanel')}</span>
+      <span className="header__chip">{t('dashboard.bilingualOps')}</span>
       <span className="header__spacer" />
+      <form
+        className="header-search desktop-only"
+        onSubmit={(e) => {
+          e.preventDefault();
+          const q = new FormData(e.currentTarget).get('q');
+          if (q) navigate(`/users?search=${encodeURIComponent(String(q))}`);
+        }}
+      >
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" aria-hidden>
+          <circle cx="11" cy="11" r="7" />
+          <path d="M20 20l-3-3" />
+        </svg>
+        <input name="q" placeholder={t('dashboard.searchAdmin')} />
+        <kbd>Ctrl+K</kbd>
+      </form>
       <ThemeSwitch />
       <LanguageSwitch value={locale} onChange={changeLanguage} />
       <DropdownMenu

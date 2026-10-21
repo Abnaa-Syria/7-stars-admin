@@ -101,7 +101,7 @@ export function SwitchRow({ label, hint, checked, onChange, disabled }) {
   return (
     <div className="switch-row">
       <div>
-        <div style={{ fontWeight: 700 }}>{label}</div>
+        <div className="cell-title">{label}</div>
         {hint && <div className="field__hint">{hint}</div>}
       </div>
       <Switch checked={Boolean(checked)} onChange={(e) => onChange(e.target.checked)} disabled={disabled} />

@@ -24,7 +24,7 @@ export default function RolesListPage() {
       sortKey: 'name',
       render: (r) => (
         <div>
-          <div style={{ fontWeight: 700 }}>{roleLabel(t, r)}</div>
+          <div className="cell-title">{roleLabel(t, r)}</div>
           <div className="field__hint ltr">{r.slug}</div>
         </div>
       ),

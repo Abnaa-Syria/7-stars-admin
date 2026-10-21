@@ -75,7 +75,7 @@ export function Alert({ tone = 'info', title, children, className }) {
     <div className={clsx('alert', `alert--${tone}`, className)} role={tone === 'danger' ? 'alert' : undefined}>
       <Icon size={17} />
       <div>
-        {title && <div style={{ fontWeight: 800, marginBottom: 2 }}>{title}</div>}
+        {title && <div className="cell-title" style={{ marginBottom: 2 }}>{title}</div>}
         {children}
       </div>
     </div>

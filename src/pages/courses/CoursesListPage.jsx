@@ -45,7 +45,7 @@ export default function CoursesListPage() {
         sortKey: 'title',
         render: (r) => (
           <div>
-            <div style={{ fontWeight: 700 }}>{r.title}</div>
+            <div className="cell-title">{r.title}</div>
             <div className="field__hint ltr">{r.slug}</div>
           </div>
         ),

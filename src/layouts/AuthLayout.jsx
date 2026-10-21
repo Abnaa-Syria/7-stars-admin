@@ -12,7 +12,10 @@ export default function AuthLayout() {
     <div className="auth">
       <div className="auth__panel">
         <div className="auth__top">
-          <BrandMark />
+          <span className="row" style={{ gap: 8, alignItems: 'center' }}>
+            <BrandMark />
+            <span className="brand-admin-pill">{t('common.adminBadge')}</span>
+          </span>
           <div className="row" style={{ gap: 8 }}>
             <ThemeSwitch />
             <LanguageSwitch value={locale} onChange={changeLanguage} />

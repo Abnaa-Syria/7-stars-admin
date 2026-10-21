@@ -278,7 +278,7 @@ export function StarsPage() {
         key: 'star',
         header: t('phase3.star'),
         render: (r) => (
-          <span style={{ fontWeight: 800, color: 'var(--gold)' }}>
+          <span className="cell-title" style={{ color: 'var(--gold)' }}>
             ★ {r.starNumber}
           </span>
         ),
@@ -419,7 +419,7 @@ export function LevelsPage() {
         key: 'xp',
         header: 'XP',
         render: (r) => (
-          <span className="ltr" style={{ fontWeight: 700 }}>
+          <span className="ltr cell-title">
             {r.minXp}{r.maxXp != null ? `–${r.maxXp}` : '+'}
           </span>
         ),
@@ -526,7 +526,7 @@ export function RulesPage() {
           <Card key={r.id}>
             <div style={{ display: 'flex', justifyContent: 'space-between', gap: 12, alignItems: 'center' }}>
               <div>
-                <div style={{ fontWeight: 700 }}>{(locale === 'en' ? r.nameEn : r.nameAr) || r.nameAr || r.nameEn}</div>
+                <div className="cell-title">{(locale === 'en' ? r.nameEn : r.nameAr) || r.nameAr || r.nameEn}</div>
                 <div className="field__hint ltr">{r.key}</div>
               </div>
               <div className="row" style={{ gap: 8, alignItems: 'center' }}>
@@ -573,7 +573,7 @@ function LedgerPage({ kind }) {
         <DataTable
           columns={[
             { key: 'user', header: t('education.student'), render: (r) => r.user?.fullName || r.userId },
-            { key: 'amount', header: t('phase3.amount'), render: (r) => <span className="ltr" style={{ fontWeight: 700 }}>{r.amount}</span> },
+            { key: 'amount', header: t('phase3.amount'), render: (r) => <span className="ltr cell-title">{r.amount}</span> },
             { key: 'source', header: t('education.source'), render: (r) => <span className="ltr">{r.sourceType}</span> },
             { key: 'createdAt', header: t('education.updatedAt'), render: (r) => formatDateTime(r.createdAt) },
             {
@@ -638,7 +638,7 @@ export function LeaderboardsPage() {
             columns={[
               { key: 'rank', header: '#', render: (r) => <Badge tone="gold">{r.rank}</Badge> },
               { key: 'name', header: t('education.student'), render: (r) => r.displayName },
-              { key: 'points', header: t('phase3.points'), render: (r) => <span style={{ fontWeight: 700 }}>{r.points}</span> },
+              { key: 'points', header: t('phase3.points'), render: (r) => <span className="cell-title">{r.points}</span> },
             ]}
             rows={allTime.data}
             query={allTime}
@@ -651,7 +651,7 @@ export function LeaderboardsPage() {
             columns={[
               { key: 'rank', header: '#', render: (r) => <Badge tone="gold">{r.rank}</Badge> },
               { key: 'name', header: t('education.student'), render: (r) => r.displayName },
-              { key: 'points', header: t('phase3.points'), render: (r) => <span style={{ fontWeight: 700 }}>{r.points}</span> },
+              { key: 'points', header: t('phase3.points'), render: (r) => <span className="cell-title">{r.points}</span> },
             ]}
             rows={weekly.data}
             query={weekly}

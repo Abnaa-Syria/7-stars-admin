@@ -56,7 +56,7 @@ export default function PlansListPage() {
         header: t('phase4.plan'),
         render: (r) => (
           <div>
-            <div style={{ fontWeight: 700 }}>{pickPlanName(r, locale)}</div>
+            <div className="cell-title">{pickPlanName(r, locale)}</div>
             <div className="field__hint ltr">{r.code}</div>
           </div>
         ),

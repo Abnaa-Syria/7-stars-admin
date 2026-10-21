@@ -7,7 +7,7 @@ export function DescriptionList({ items = [], single }) {
       {items
         .filter((i) => !i.hidden)
         .map((item) => (
-          <div key={item.label} className="kv__item" style={item.full ? { gridColumn: '1 / -1' } : undefined}>
+          <div key={item.label} className={clsx('kv__item', item.full && 'kv__item--full')}>
             <dt className="kv__label">{item.label}</dt>
             <dd className="kv__value" style={{ margin: 0 }}>
               {item.value === null || item.value === undefined || item.value === '' ? <span className="subtle">—</span> : item.value}

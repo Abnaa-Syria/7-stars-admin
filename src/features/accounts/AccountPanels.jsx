@@ -130,7 +130,7 @@ export function SessionsTable({ query, onRevoke, revokingId }) {
       header: t('sessions.device'),
       render: (s) => (
         <div>
-          <div style={{ fontWeight: 700 }}>{deviceLabel(s, t)}</div>
+          <div className="cell-title">{deviceLabel(s, t)}</div>
           <div className="field__hint">{s.platform || '—'}</div>
         </div>
       ),

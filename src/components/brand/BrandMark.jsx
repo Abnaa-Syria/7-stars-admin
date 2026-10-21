@@ -27,10 +27,10 @@ export function LanguageSwitch({ value, onChange }) {
   return (
     <div className="lang-switch" role="group" aria-label={t('theme.language')}>
       <button type="button" className={value === 'ar' ? 'active' : undefined} onClick={() => onChange('ar')} lang="ar">
-        العربية
+        AR
       </button>
       <button type="button" className={value === 'en' ? 'active' : undefined} onClick={() => onChange('en')} lang="en">
-        English
+        EN
       </button>
     </div>
   );
